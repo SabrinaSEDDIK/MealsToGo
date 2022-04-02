@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, StatusBar, FlatList } from "react-native";
+import { View, FlatList } from "react-native";
 import { Searchbar } from "react-native-paper";
 import { RestaurantInfoCard } from "../components/restaurant-info-card.component";
 import styled from "styled-components/native";
@@ -11,7 +11,7 @@ export const RestaurantsScreen = () => {
   const onChangeSearch = (query) => setSearchQuery(query);
 
   return (
-    <SafeArea>
+    <>
       <SearchbarContainer>
         <Searchbar
           placeholder="Search"
@@ -37,14 +37,9 @@ export const RestaurantsScreen = () => {
         )}
         keyExtractor={(item) => item.name}
       />
-    </SafeArea>
+    </>
   );
 };
-
-const SafeArea = styled.SafeAreaView`
-  flex: 1;
-  ${StatusBar.currentHeight && `margin-top: ${StatusBar.currentHeight}px`};
-`; /*pour compatibilité iOS car SafeAreaView est seulement pour iOS*/
 
 const SearchbarContainer = styled(View)`
   padding: ${(props) => props.theme.space[3]};
