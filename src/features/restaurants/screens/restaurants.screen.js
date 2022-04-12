@@ -1,38 +1,32 @@
-import React, { useState } from "react";
-import { View, FlatList } from "react-native";
-import { Searchbar } from "react-native-paper";
+import React, { useContext } from "react";
+import { FlatList } from "react-native";
+import { ActivityIndicator, Colors } from "react-native-paper";
 import { RestaurantInfoCard } from "../components/restaurant-info-card.component";
 import styled from "styled-components/native";
 import { Spacer } from "../../../components/spacer/spacer.component";
+import { RestaurantsContext } from "../../../services/restaurants/restaurants.context";
+import { Search } from "../../../features/restaurants/components/search.component";
 
 export const RestaurantsScreen = () => {
-  const [searchQuery, setSearchQuery] = useState("");
-
-  const onChangeSearch = (query) => setSearchQuery(query);
+  const { isLoading, restaurants } = useContext(RestaurantsContext);
 
   return (
     <>
-      <SearchbarContainer>
-        <Searchbar
-          placeholder="Search"
-          onChangeText={onChangeSearch}
-          value={searchQuery}
-        />
-      </SearchbarContainer>
+      <Search />
+
+      {isLoading && (
+        <LoadingContainer>
+          <Loading size={50} animating={true} color={Colors.amber100} />
+        </LoadingContainer>
+      )}
 
       <RestaurantsList
-        data={[
-          { name: 1 },
-          { name: 2 },
-          { name: 3 },
-          { name: 4 },
-          { name: 5 },
-          { name: 6 },
-        ]}
-        renderItem={() => (
+        data={restaurants}
+        renderItem={({ item }) => (
           <>
-            <RestaurantInfoCard />
-            <Spacer position="bottom" size="large" />
+            <Spacer position="bottom" size="large">
+              <RestaurantInfoCard restaurant={item} />
+            </Spacer>
           </>
         )}
         keyExtractor={(item) => item.name}
@@ -41,12 +35,19 @@ export const RestaurantsScreen = () => {
   );
 };
 
-const SearchbarContainer = styled(View)`
-  padding: ${(props) => props.theme.space[3]};
-`;
+//style
 
 const RestaurantsList = styled(FlatList).attrs(() => ({
   contentContainerStyle: {
     padding: 16,
   },
 }))``;
+
+const Loading = styled(ActivityIndicator)`
+  margin-left: -25px;
+`;
+const LoadingContainer = styled.View`
+  position: absolute;
+  top: 50%;
+  left: 50%;
+`;
